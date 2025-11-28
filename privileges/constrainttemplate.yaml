@@ -1,0 +1,56 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8sdisallowprivilegedcontainers
+  annotations:
+    description: Disallows the use of privileged containers.
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sDisallowPrivilegedContainers
+      validation:
+        # Schema for the Constraint's parameters
+        openAPIV3Schema:
+          type: object
+          properties:
+            message:
+              type: string
+            excludedNamespaces:
+              type: array
+              items:
+                type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sdisallowprivilegedcontainers
+
+        violation[{"msg": msg}] {
+          # Check for 'Deployment', 'DaemonSet', 'StatefulSet', 'Job', 'ReplicaSet' etc.
+          # and get the Pod Spec
+          container_input := input.review.object.spec.template.spec.containers
+          
+          # Check for 'Pod' directly
+          not container_input
+          container_input := input.review.object.spec.containers
+          
+          # Iterate over all containers
+          container := container_input[_]
+          
+          # Check for privileged field in the container's securityContext
+          container.securityContext.privileged
+          
+          # Check if the Pod/Deployment is in an excluded namespace
+          not exclusion_check(input.review.object.metadata.namespace)
+
+          # The violation message
+          msg := sprintf("Privileged container is disallowed: Container '%v' in pod/workload '%v' must not set securityContext.privileged to true.", [container.name, input.review.object.metadata.name])
+        }
+
+        # Helper function to check for excluded namespaces
+        exclusion_check(namespace) {
+          # Get the list of excluded namespaces from the Constraint parameters
+          excluded := input.parameters.excludedNamespaces
+          # Check if the namespace is in the list of excluded namespaces
+          namespace == excluded[_]
+        }
