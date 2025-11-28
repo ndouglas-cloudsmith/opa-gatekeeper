@@ -1,0 +1,17 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sNetworkPolicyRequired
+metadata:
+  name: require-default-networkpolicy
+spec:
+  # Apply the constraint to the following kinds
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Namespace"]
+  # Exclude system namespaces (optional but highly recommended)
+  # This prevents the policy from breaking core cluster components.
+  exemptions:
+    - namespace: kube-system
+    - namespace: gatekeeper-system
+    - namespace: kube-public
+    - namespace: kube-node-lease
