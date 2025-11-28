@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secure-chainguard-nginx
+  labels:
+    app: secure-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: secure-nginx
+  template:
+    metadata:
+      labels:
+        app: secure-nginx
+    spec:
+      containers:
+      - name: nginx-secure
+        image: cgr.dev/chainguard/nginx:latest
+        ports:
+        - containerPort: 8080
+          name: http-web
