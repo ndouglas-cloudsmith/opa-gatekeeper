@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insecure-chainguard-nginx
+  labels:
+    app: insecure-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: insecure-nginx
+  template:
+    metadata:
+      labels:
+        app: insecure-nginx
+    spec:
+      # --- Start of the Security Violation ---
+      containers:
+      - name: nginx-privileged
+        # Using a secure-by-default Chainguard image
+        image: cgr.dev/chainguard/nginx:latest
+        # This explicit securityContext setting will trigger the OPA policy
+        securityContext:
+          # VULNERABILITY: Setting privileged: true grants the container
+          # full root capabilities on the host.
+          privileged: true 
+          # Note: Chainguard images often run as non-root (e.g., UID 65532) 
+          # but setting privileged: true overrides this safety and will fail the policy.    
+        ports:
+        - containerPort: 8080
+          name: http-web
