@@ -1,0 +1,15 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sDisallowPrivilegedContainers
+metadata:
+  name: disallow-privileged-pods
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+      - apiGroups: ["apps"]
+        kinds: ["Deployment", "StatefulSet", "DaemonSet"]
+    # Exclude system namespaces where privileged containers might be required (e.g., CNI, storage drivers)
+    excludedNamespaces: ["kube-system", "gatekeeper-system"] 
+  parameters:
+    message: "Privileged containers are not allowed as per security policy. Please remove 'securityContext.privileged: true'."
