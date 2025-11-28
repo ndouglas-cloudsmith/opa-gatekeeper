@@ -53,3 +53,6 @@ kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatek
 alias kubectl="kubecolor"
 kubectl delete -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/constrainttemplate.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/constraint.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/secure-deployment.yaml
 ```
+
+<img width="1502" height="342" alt="Screenshot 2025-11-28 at 22 50 42" src="https://github.com/user-attachments/assets/9d75fe7d-46ee-465e-9968-0afac386a9d2" />
+
