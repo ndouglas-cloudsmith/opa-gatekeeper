@@ -45,6 +45,9 @@ Since Chainguard images run as non-root by default, this template is secure with
 kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/secure-deployment.yaml
 ```
 
+<img width="1502" height="422" alt="Screenshot 2025-11-28 at 22 46 37" src="https://github.com/user-attachments/assets/bdd2cf33-5ba1-43c6-8e50-f8b6580c5798" />
+
+
 #### Cleanup Exercise 1
 ```
 alias kubectl="kubecolor"
