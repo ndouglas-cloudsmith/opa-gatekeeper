@@ -19,11 +19,16 @@ kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatek
 ```
 
 #### How This Policy Works
-1. **Intercepts:** The OPA Gatekeeper Admission Controller intercepts all ```CREATE``` and ```UPDATE``` requests for ```Pods```, ```Deployments```, ```StatefulSets```, and ```DaemonSets```.
-2. **Evaluation:** The **Rego** code (from the ```ConstraintTemplate```) is executed against the incoming resource's YAML.
-3. **Validation:** The Rego logic checks the ```.spec.template.spec.containers``` (for Deployments, etc.) or ```.spec.containers``` (for naked Pods) for a field named ```securityContext.privileged```.
-4. **Enforcement:** If ```privileged: true``` is found in a container spec, and the object is not in an ```excludedNamespace```, the ```violation``` rule is triggered.
-5. **Rejection:** The admission request is rejected with the custom error ```message``` defined in the ```Constraint```, preventing the insecure resource from ever being applied to the cluster.
+1. **Intercepts:** <br/>
+The OPA Gatekeeper Admission Controller intercepts all ```CREATE``` and ```UPDATE``` requests for ```Pods```, ```Deployments```, ```StatefulSets```, and ```DaemonSets```.
+2. **Evaluation:** <br/>
+The **Rego** code (from the ```ConstraintTemplate```) is executed against the incoming resource's YAML.
+3. **Validation:** <br/>
+The Rego logic checks the ```.spec.template.spec.containers``` (for Deployments, etc.) or ```.spec.containers``` (for naked Pods) for a field named ```securityContext.privileged```.
+4. **Enforcement:** <br/>
+If ```privileged: true``` is found in a container spec, and the object is not in an ```excludedNamespace```, the ```violation``` rule is triggered.
+5. **Rejection:** <br/>
+The admission request is rejected with the custom error ```message``` defined in the ```Constraint```, preventing the insecure resource from ever being applied to the cluster.
 
 #### Insecure Deployment Manifest
 This YAML uses the highly secure Chainguard ```nginx``` image but overrides the security context at the Deployment level to introduce the security flaw your policy checks for.
