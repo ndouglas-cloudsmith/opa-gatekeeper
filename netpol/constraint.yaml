@@ -8,7 +8,6 @@ spec:
     kinds:
       - apiGroups: ["apps"]
         kinds: ["Deployment"]
-    # 🎯 CORRECT LOCATION: excludedNamespaces is a sub-field of 'match'
     excludedNamespaces: 
       - kube-system
       - gatekeeper-system
