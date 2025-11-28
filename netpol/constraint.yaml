@@ -3,14 +3,16 @@ kind: K8sNetworkPolicyRequired
 metadata:
   name: require-default-networkpolicy
 spec:
-  # The match block defines which resources the constraint applies to.
   match:
+    # 💥 CHANGE: Target Deployments, Pods, etc., not the Namespace itself!
     kinds:
+      - apiGroups: ["apps"]
+        kinds: ["Deployment"]
       - apiGroups: [""]
-        kinds: ["Namespace"]
-    # 💥 CHANGE THIS: Use 'excludedNamespaces' instead of 'exemptions'
-    excludedNamespaces:
-      - kube-system
-      - gatekeeper-system
-      - kube-public
-      - kube-node-lease
+        kinds: ["Pod"]
+  # Exclude system namespaces (as before)
+  excludedNamespaces:
+    - kube-system
+    - gatekeeper-system
+    - kube-public
+    - kube-node-lease
