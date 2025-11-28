@@ -10,12 +10,9 @@ spec:
       names:
         kind: K8sDisallowPrivilegedContainers
       validation:
-        # Schema for the Constraint's parameters
         openAPIV3Schema:
           type: object
           properties:
-            message:
-              type: string
             excludedNamespaces:
               type: array
               items:
@@ -26,25 +23,34 @@ spec:
         package k8sdisallowprivilegedcontainers
 
         violation[{"msg": msg}] {
-          # Check for 'Deployment', 'DaemonSet', 'StatefulSet', 'Job', 'ReplicaSet' etc.
-          # and get the Pod Spec
-          container_input := input.review.object.spec.template.spec.containers
-          
-          # Check for 'Pod' directly
-          not container_input
-          container_input := input.review.object.spec.containers
-          
-          # Iterate over all containers
-          container := container_input[_]
-          
-          # Check for privileged field in the container's securityContext
-          container.securityContext.privileged
-          
-          # Check if the Pod/Deployment is in an excluded namespace
-          not exclusion_check(input.review.object.metadata.namespace)
+            # Check 1: Workloads (Deployment, DaemonSet, etc.)
+            container_input := input.review.object.spec.template.spec.containers
+            container := container_input[_]
+            check_privileged(container)
 
-          # The violation message
-          msg := sprintf("Privileged container is disallowed: Container '%v' in pod/workload '%v' must not set securityContext.privileged to true.", [container.name, input.review.object.metadata.name])
+            # Skip if the namespace is excluded
+            not exclusion_check(input.review.object.metadata.namespace)
+
+            msg := sprintf("Privileged container is disallowed: Container '%v' in workload '%v' must not set securityContext.privileged to true.", 
+                           [container.name, input.review.object.metadata.name])
+        }
+
+        violation[{"msg": msg}] {
+            # Check 2: Direct Pods
+            container_input := input.review.object.spec.containers
+            container := container_input[_]
+            check_privileged(container)
+
+            # Skip if the namespace is excluded
+            not exclusion_check(input.review.object.metadata.namespace)
+
+            msg := sprintf("Privileged container is disallowed: Container '%v' in pod '%v' must not set securityContext.privileged to true.", 
+                           [container.name, input.review.object.metadata.name])
+        }
+
+        # Helper rule to check for privileged=true in the container's securityContext
+        check_privileged(container) {
+            container.securityContext.privileged
         }
 
         # Helper function to check for excluded namespaces
