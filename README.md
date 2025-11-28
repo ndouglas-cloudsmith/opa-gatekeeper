@@ -27,7 +27,8 @@ The **Rego** code (from the ```ConstraintTemplate```) is executed against the in
 The Rego logic checks the ```.spec.template.spec.containers``` (for Deployments, etc.) <br/>
 or ```.spec.containers``` (for naked Pods) for a field named ```securityContext.privileged```.
 4. **Enforcement:** <br/>
-If ```privileged: true``` is found in a container spec, & object is not in ```excludedNamespace```, the ```violation``` rule is triggered.
+If ```privileged: true``` is found in a container spec, <br/>
+and the object is not in ```excludedNamespace```, the ```violation``` rule is triggered.
 5. **Rejection:** <br/>
 Admission request is rejected with custom error ```message``` defined in the ```Constraint```, <br/>
 preventing the insecure resource from ever being applied in-cluster.
