@@ -29,7 +29,8 @@ or ```.spec.containers``` (for naked Pods) for a field named ```securityContext.
 4. **Enforcement:** <br/>
 If ```privileged: true``` is found in a container spec, & object is not in ```excludedNamespace```, the ```violation``` rule is triggered.
 5. **Rejection:** <br/>
-Admission request is rejected with custom error ```message``` defined in the ```Constraint```, preventing the insecure resource from ever being applied in-cluster.
+Admission request is rejected with custom error ```message``` defined in the ```Constraint```, <br/>
+preventing the insecure resource from ever being applied in-cluster.
 
 #### Insecure Deployment Manifest
 This YAML uses the highly secure Chainguard ```nginx``` image but overrides the security context at the Deployment level to introduce the security flaw your policy checks for.
