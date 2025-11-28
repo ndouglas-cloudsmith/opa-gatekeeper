@@ -51,5 +51,5 @@ kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatek
 #### Cleanup Exercise 1
 ```
 alias kubectl="kubecolor"
-kubectl delete -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/constrainttemplate.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/constraint.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/deployment.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/secure-deployment.yaml
+kubectl delete -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/constrainttemplate.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/constraint.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/secure-deployment.yaml
 ```
