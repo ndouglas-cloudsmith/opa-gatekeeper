@@ -30,3 +30,9 @@ This YAML uses the highly secure Chainguard ```nginx``` image but overrides the 
 ```
 kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/deployment.yaml
 ```
+#### Secure Deployment Manifest (Policy Pass)
+For comparison, here is the corrected, secure deployment that will pass the policy because it omits the insecure setting. <br/>
+Since Chainguard images run as non-root by default, this template is secure without needing explicit ```runAsNonRoot``` or ```runAsUser``` settings.
+```
+kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/secure-deployment.yaml
+```
