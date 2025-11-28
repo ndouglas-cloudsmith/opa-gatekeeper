@@ -1,2 +1,32 @@
-# opa-gatekeeper
+# OPA Gatekeeper
 OPA Gatekeeper sample Rego Policies
+
+## Disallowing Privileged Containers
+It represents the broadest, most dangerous permission possible. <br/>
+We will create an OPA Gatekeeper ```ConstraintTemplate``` and ```Constraint``` to enforce this.
+
+#### ConstraintTemplate (The Rego Logic)
+The ```ConstraintTemplate``` defines the reusable Rego logic. This policy iterates through all containers (main containers, init containers, and ephemeral containers) and reports a violation if any of them have ```privileged: true```.
+
+```
+kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/constrainttemplate.yaml
+```
+
+#### Constraint (The Enforcement)
+The ```Constraint``` is an instance of the template that sets the specific parameters (like the violation message and where to apply the policy).
+```
+kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/constraint.yaml
+```
+
+#### How This Policy Works
+1. **Intercepts:** The OPA Gatekeeper Admission Controller intercepts all CREATE and UPDATE requests for Pods, Deployments, StatefulSets, and DaemonSets.
+2. **Evaluation:** The Rego code (from the ConstraintTemplate) is executed against the incoming resource's YAML.
+3. **Validation:** The Rego logic checks the .spec.template.spec.containers (for Deployments, etc.) or .spec.containers (for naked Pods) for a field named securityContext.privileged.
+4. **Enforcement:** If privileged: true is found in a container spec, and the object is not in an excludedNamespace, the violation rule is triggered.
+5. **Rejection:** The admission request is rejected with the custom error message defined in the Constraint, preventing the insecure resource from ever being applied to the cluster.
+
+#### Insecure Deployment Manifest
+This YAML uses the highly secure Chainguard ```nginx``` image but overrides the security context at the Deployment level to introduce the security flaw your policy checks for.
+```
+kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/deployment.yaml
+```
