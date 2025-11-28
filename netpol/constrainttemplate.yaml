@@ -1,35 +1,9 @@
-apiVersion: templates.gatekeeper.sh/v1
-kind: ConstraintTemplate
-metadata:
-  name: k8snetworkpolicyrequired
-spec:
-  crd:
-    spec:
-      names:
-        kind: K8sNetworkPolicyRequired
-      validation:
-        # Define parameters (none are needed for this simple check)
-        openAPIV3Schema:
-          type: object
-          properties: {}
-  targets:
-    - target: admission.k8s.gatekeeper.sh
-      rego: |
-        package k8snetworkpolicyrequired
+package k8snetworkpolicyrequired
 
-        # This rule executes when a Namespace is created or updated.
-        violation[{"msg": msg}] {
-          # Check if the resource being admitted is a Namespace
-          input.review.kind.kind == "Namespace"
-          namespace_name := input.review.object.metadata.name
-
-          # Query the cluster for NetworkPolicies in this namespace
-          # `data.inventory` contains the cluster's current state (cached by Gatekeeper)
-          # Specifically, we look for NetworkPolicies in the *target* namespace
-          policies := data.inventory.namespace[namespace_name]["networking.k8s.io/v1"]["NetworkPolicy"]
-
-          # If the 'policies' variable is undefined or empty, it means no
-          # NetworkPolicy exists in that namespace.
-          not policies
-          msg := sprintf("Namespace %v is missing a required NetworkPolicy.", [namespace_name])
-        }
+violation[{"msg": msg}] {
+  namespace_name := input.review.namespace
+  namespace_name != ""
+  policies := data.inventory.namespace[namespace_name]["networking.k8s.io/v1"]["NetworkPolicy"]
+  not policies
+  msg := sprintf("Deployment in Namespace %v is blocked because the Namespace is missing a required NetworkPolicy.", [namespace_name])
+}
