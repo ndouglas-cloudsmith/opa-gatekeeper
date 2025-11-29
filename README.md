@@ -55,31 +55,3 @@ kubectl delete -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gate
 ```
 
 <img width="1502" height="342" alt="Screenshot 2025-11-28 at 22 50 42" src="https://github.com/user-attachments/assets/9d75fe7d-46ee-465e-9968-0afac386a9d2" />
-
-
-## Mandate NetworkPolicy
-This policy requires every Namespace to have an active ```NetworkPolicy``` to ensure network segmentation is considered.
-
-```
-kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/netpol/constrainttemplate.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/netpol/constraint.yaml
-```
-
-Create the ```namespace``` and ```deployment``` resources:
-
-```
-kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/netpol/namespace.yaml
-kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/secure-deployment.yaml -n policy-test-fail-ns
-```
-
-#### Cleanup Exercise 2
-```
-kubectl delete -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/netpol/constrainttemplate.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/netpol/constraint.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/secure-deployment.yaml -n policy-test-fail-ns -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/netpol/namespace.yaml
-```
-
-```
-kubectl apply -f constrainttemplate.yaml -f constraint.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/secure-deployment.yaml -n policy-test-fail-ns -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/netpol/namespace.yaml
-```
-
-```
-kubectl delete -f constrainttemplate.yaml -f constraint.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/secure-deployment.yaml -n policy-test-fail-ns -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/netpol/namespace.yaml
-```
