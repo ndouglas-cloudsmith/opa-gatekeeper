@@ -6,15 +6,15 @@ spec:
   crd:
     spec:
       names:
-        kind: K8sNetworkPolicyRequired # Must match the `kind` in your constraint.yaml
+        kind: K8sNetworkPolicyRequired
   targets:
-    - target: admission.k8s.gatekeeper
+    - target: admission.k8s.gatekeeper.sh  # <-- The key fix is here!
       rego: |
         package k8snetworkpolicyrequired
+
         violation[{"msg": msg}] {
           namespace_name := input.review.namespace
           namespace_name != ""
-          # You must be checking for NetworkPolicy on the namespace in question.
           # Note: data.inventory path might need adjustment based on your Gatekeeper setup.
           policies := data.inventory.namespace[namespace_name]["networking.k8s.io/v1"]["NetworkPolicy"]
           not policies
