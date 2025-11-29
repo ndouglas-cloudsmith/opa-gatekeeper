@@ -1,9 +1,22 @@
-package k8snetworkpolicyrequired
-
-violation[{"msg": msg}] {
-  namespace_name := input.review.namespace
-  namespace_name != ""
-  policies := data.inventory.namespace[namespace_name]["networking.k8s.io/v1"]["NetworkPolicy"]
-  not policies
-  msg := sprintf("Deployment in Namespace %v is blocked because the Namespace is missing a required NetworkPolicy.", [namespace_name])
-}
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8snetworkpolicyrequired
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sNetworkPolicyRequired # Must match the `kind` in your constraint.yaml
+  targets:
+    - target: admission.k8s.gatekeeper
+      rego: |
+        package k8snetworkpolicyrequired
+        violation[{"msg": msg}] {
+          namespace_name := input.review.namespace
+          namespace_name != ""
+          # You must be checking for NetworkPolicy on the namespace in question.
+          # Note: data.inventory path might need adjustment based on your Gatekeeper setup.
+          policies := data.inventory.namespace[namespace_name]["networking.k8s.io/v1"]["NetworkPolicy"]
+          not policies
+          msg := sprintf("Deployment in Namespace %v is blocked because the Namespace is missing a required NetworkPolicy.", [namespace_name])
+        }
