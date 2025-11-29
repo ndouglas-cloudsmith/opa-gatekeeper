@@ -75,3 +75,11 @@ kubectl apply -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatek
 ```
 kubectl delete -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/netpol/constrainttemplate.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/netpol/constraint.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/secure-deployment.yaml -n policy-test-fail-ns -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/netpol/namespace.yaml
 ```
+
+```
+kubectl apply -f constrainttemplate.yaml -f constraint.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/secure-deployment.yaml -n policy-test-fail-ns -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/netpol/namespace.yaml
+```
+
+```
+kubectl delete -f constrainttemplate.yaml -f constraint.yaml -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/privileges/secure-deployment.yaml -n policy-test-fail-ns -f https://raw.githubusercontent.com/ndouglas-cloudsmith/opa-gatekeeper/refs/heads/main/netpol/namespace.yaml
+```
