@@ -3,7 +3,6 @@ kind: K8sNetworkPolicyRequired
 metadata:
   name: require-default-networkpolicy
 spec:
-  # The match block is where all resource selection criteria go.
   match:
     kinds:
       - apiGroups: ["apps"]
